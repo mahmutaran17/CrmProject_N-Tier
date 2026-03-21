@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CrmProject.Business/CrmProject.Business.csproj" />
+  <Project Path="CrmProject.DataAccess/CrmProject.DataAccess.csproj" />
+  <Project Path="CrmProject.Entity/CrmProject.Entity.csproj" />
+  <Project Path="CrmProject.WebUI/CrmProject.WebUI.csproj" />
+</Solution>
