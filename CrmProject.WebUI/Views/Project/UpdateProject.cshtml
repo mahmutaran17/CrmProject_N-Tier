@@ -1,0 +1,34 @@
+﻿@model CrmProject.Entity.Entities.Project
+
+@{
+    ViewData["Title"] = "Proje Güncelle";
+}
+
+<div class="container mt-4">
+    <h2>Proje Güncelle</h2>
+    <hr />
+
+    <form asp-controller="Project" asp-action="UpdateProject" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Proje Adı</label>
+            <input type="text" class="form-control" asp-for="ProjectName" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Proje Açıklaması</label>
+            <textarea class="form-control" asp-for="Description" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Proje Durumu</label>
+            <select class="form-control" asp-for="Status" asp-items="Html.GetEnumSelectList<CrmProject.Entity.Entities.ProjectStatus>()"></select>
+        </div>
+
+        <button type="submit" class="btn btn-warning">Güncelle</button>
+        <a href="/Project/Index" class="btn btn-secondary">İptal</a>
+
+    </form>
+</div>
