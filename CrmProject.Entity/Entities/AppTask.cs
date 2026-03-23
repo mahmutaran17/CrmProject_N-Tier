@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace CrmProject.Entity.Entities
 {
+    public enum AppTaskStatus
+    {
+        Beklemede = 1,
+        DevamEdiyor = 2,
+        Tamamlandi = 3,
+        IptalEdildi = 4
+    }
+    public enum AppTaskPriority
+    {
+        Dusuk = 1,
+        Orta = 2,
+        Yuksek = 3,
+        Acil = 4
+    }
+
     public class AppTask
     {
         public int Id { get; set; }
@@ -16,14 +31,18 @@ namespace CrmProject.Entity.Entities
         public int AssignedToUserId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime DueDate { get; set; }
-        public string Status { get; set; } = null!;
-        public string Priority { get; set; } = null!;
+
+        public AppTaskStatus Status { get; set; }
+        public AppTaskPriority Priority { get; set; }
 
 
+        //(Navigation Properties) 
         public Project Project { get; set; } = null!;
         public User AssignedByUser { get; set; } = null!;
         public User AssignedToUser { get; set; } = null!;
 
         public ICollection<TaskLog> TaskLogs { get; set; } = new List<TaskLog>();
     }
+
+
 }
