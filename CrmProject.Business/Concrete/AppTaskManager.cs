@@ -10,15 +10,17 @@ using System.Threading.Tasks;
 
 namespace CrmProject.Business.Concrete
 {
-    public class UserManager : GenericManager<User> , IUserService
+    public class AppTaskManager : GenericManager<AppTask> , IAppTaskService
     {
 
-        public UserManager(IGenericRepository<User> repository) : base(repository)
+        public AppTaskManager(IGenericRepository<AppTask> repository) : base(repository)
         {
             
         }
 
         
 
+
+        
     }
 }

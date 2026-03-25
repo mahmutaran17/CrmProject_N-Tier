@@ -48,13 +48,13 @@ namespace CrmProject.DataAccess.Context
                 .WithMany(u => u.CreatedTasks)
                 .HasForeignKey(t => t.AssignedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
-                
-            //apptask => assignToUser
+
+            //apptask => assignToUser many-many
             modelBuilder.Entity<AppTask>()
-                .HasOne(t => t.AssignedToUser)
-                .WithMany(u => u.AssignedTasks)
-                .HasForeignKey(t => t.AssignedToUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasMany(t => t.AssignedUsers)
+                .WithMany (u => u.AssignedTasks)
+                .UsingEntity(j => j.ToTable("AppTaskAssignedUsers"));
+            
             
             //tasklog => appTask many-one
             modelBuilder.Entity<TaskLog>()

@@ -28,9 +28,10 @@ namespace CrmProject.Entity.Entities
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public int AssignedByUserId { get; set; }
-        public int AssignedToUserId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime DueDate { get; set; }
+
+        //
 
         public AppTaskStatus Status { get; set; }
         public AppTaskPriority Priority { get; set; }
@@ -39,9 +40,9 @@ namespace CrmProject.Entity.Entities
         //(Navigation Properties) 
         public Project Project { get; set; } = null!;
         public User AssignedByUser { get; set; } = null!;
-        public User AssignedToUser { get; set; } = null!;
 
         public ICollection<TaskLog> TaskLogs { get; set; } = new List<TaskLog>();
+        public ICollection<User> AssignedUsers { get; set; } = new List<User>();
     }
 
 

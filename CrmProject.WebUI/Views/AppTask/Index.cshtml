@@ -1,0 +1,56 @@
+﻿@model List<CrmProject.Entity.Entities.AppTask>
+@{
+    ViewData["Title"] = "Görevler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-2xl font-manrope font-extrabold text-blue-900 tracking-tight">Görev Listesi</h1>
+    <a href="/AppTask/Create" class="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm">
+        <span class="material-symbols-outlined text-[20px]">add</span>
+        Yeni Görev Ekle
+    </a>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-inter text-xs uppercase tracking-wider">
+                <th class="p-4 font-semibold">Görev Başlığı</th>
+                <th class="p-4 font-semibold">Durum / Öncelik</th>
+                <th class="p-4 font-semibold">Tarihler</th>
+                <th class="p-4 font-semibold text-right">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 font-inter text-sm">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 text-slate-900 font-medium">@item.Title</td>
+                        <td class="p-4">
+                            <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-semibold block mb-1 w-max">@item.Status</span>
+                            <span class="text-slate-500 text-xs">@item.Priority</span>
+                        </td>
+                        <td class="p-4 text-slate-500 text-xs">
+                            <div><span class="font-semibold text-slate-700">Başlangıç:</span> @item.StartDate.ToString("dd.MM.yyyy")</div>
+                            <div><span class="font-semibold text-slate-700">Bitiş:</span> @item.DueDate.ToString("dd.MM.yyyy")</div>
+                        </td>
+                        <td class="p-4 flex justify-end gap-2">
+                            <a href="/AppTask/Update/@item.Id" class="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="p-8 text-center text-slate-500">Henüz kayıt yok.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

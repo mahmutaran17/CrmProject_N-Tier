@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace CrmProject.Business.Abstract
 {
-    public interface IUserService : IGenericService<User>
+    public interface IAppTaskService : IGenericService<AppTask>
     {
         
+
     }
 }

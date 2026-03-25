@@ -16,7 +16,8 @@ b => b.MigrationsAssembly("CrmProject.DataAccess")
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 //business
-builder.Services.AddScoped<ITaskService, TaskManager>();
+builder.Services.AddScoped<IAppTaskRepository, AppTaskRepository>();
+builder.Services.AddScoped<IAppTaskService, AppTaskManager>();
 builder.Services.AddScoped<IProjectService, ProjectManager>();
 builder.Services.AddScoped<IUserService, UserManager>();
 

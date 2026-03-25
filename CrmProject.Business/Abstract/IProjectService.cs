@@ -8,14 +8,8 @@ using System.Threading.Tasks;
 
 namespace CrmProject.Business.Abstract
 {
-    public interface IProjectService
+    public interface IProjectService : IGenericService<Project>
     {
-        Task<Project?> GetByIdAsync(int id);
-        Task<List<Project>> GetAllAsync();
-        Task<List<Project>> GetWhereAsync(Expression<Func<Project, bool>> predicate);
-        Task AddAsync(Project entity);
-        void Update(Project entity);
-        void Delete(Project entity);
-        Task<int> SaveAsync();
+        
     }
 }
