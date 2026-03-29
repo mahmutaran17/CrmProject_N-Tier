@@ -16,6 +16,7 @@ namespace CrmProject.DataAccess.Concrete
         private readonly DbSet<T> _dbSet;
 
         //with DI, we are getting DbContext
+
         public GenericRepository(CrmDbContext context)
         {
             _context = context;
@@ -55,5 +56,31 @@ namespace CrmProject.DataAccess.Concrete
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<T?> GetSingleWithIncludesAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<List<T>> GetListWithIncludesAsync(Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+                query = query.Where(filter);
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

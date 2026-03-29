@@ -1,6 +1,5 @@
 ﻿@using CrmProject.Entity.Entities
 @model List<CrmProject.Entity.Entities.Project>
-
 @{
     ViewData["Title"] = "Projeler";
 }
@@ -19,12 +18,17 @@
 
     @foreach (var item in Model)
     {
-        <div class="bg-surface-container-lowest p-6 rounded-xl editorial-shadow group transition-all hover:bg-surface-bright">
+        <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-slate-200 transition-all hover:shadow-md">
 
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <span class="text-[10px] font-bold uppercase tracking-widest text-outline mb-1 block">@item.Description</span>
-                    <h3 class="font-headline font-bold text-lg text-on-surface group-hover:text-primary transition-colors leading-tight">@item.ProjectName</h3>
+                    <h3 class="font-headline font-bold text-lg text-on-surface leading-tight">@item.ProjectName</h3>
+                    
+                    <div class="mt-2 inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-semibold">
+                        <span class="material-symbols-outlined text-[14px]">business</span>
+                        @(item.Customer != null ? item.Customer.CustomerName : "Müşteri Atanmamış")
+                    </div>
                 </div>
 
                 @if (item.Status == ProjectStatus.Aktif)
@@ -41,30 +45,33 @@
                 }
             </div>
 
-            <div class="mt-4 flex items-center gap-4 text-xs font-medium text-on-surface-variant bg-surface-container-low p-2 rounded-lg inline-flex">
+            <div class="mt-4 flex items-center gap-4 text-xs font-medium text-slate-500 bg-slate-50 p-2 rounded-lg inline-flex border border-slate-100">
                 <span class="flex items-center gap-1" title="Başlangıç Tarihi">
                     <span class="material-symbols-outlined text-[14px]">calendar_today</span>
                     @item.StartDate.ToString("dd.MM.yyyy")
                 </span>
-                <span class="text-outline">|</span>
+                <span class="text-slate-300">|</span>
                 <span class="flex items-center gap-1" title="Bitiş Tarihi">
                     <span class="material-symbols-outlined text-[14px]">event_available</span>
                     @(item.EndDate.HasValue? item.EndDate.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")
                 </span>
             </div>
 
-            <div class="mt-6 flex items-center justify-end gap-3 border-t border-outline/5 pt-4">
+            <div class="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
                 <a href="/Project/UpdateProject/@item.Id" class="flex items-center gap-1 text-xs font-bold text-yellow-600 hover:text-yellow-700 transition-colors">
                     <span class="material-symbols-outlined text-[16px]">edit</span> Düzenle
                 </a>
                 <a href="/Project/DeleteProject/@item.Id" class="flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 transition-colors">
                     <span class="material-symbols-outlined text-[16px]">delete</span> Sil
                 </a>
+                <a href="/Project/Details/@item.Id" class="flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">visibility</span> Detaylar
+                </a>
             </div>
         </div>
     }
 </div>
 
-<a href="/Project/AddProject" class="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-white shadow-xl flex items-center justify-center active:scale-90 transition-transform z-[60]">
+<a href="/Project/AddProject" class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-blue-900 text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform z-50">
     <span class="material-symbols-outlined text-3xl">add</span>
 </a>

@@ -17,5 +17,8 @@ namespace CrmProject.DataAccess.Abstract
         void Update(T Entity);
         void Delete(T Entity);
         Task<int> SaveAsync();
+        Task<T?> GetSingleWithIncludesAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
+        Task<List<T>> GetListWithIncludesAsync(Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] includes);
+
     }
 }

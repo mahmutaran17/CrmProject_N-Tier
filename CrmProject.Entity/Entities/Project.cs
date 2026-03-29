@@ -14,6 +14,8 @@ namespace CrmProject.Entity.Entities
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ProjectStatus Status { get; set; }
+        public int? CustomerId { get; set; }
+        public Customer? Customer { get; set; }
 
 
         //nav properties
@@ -21,6 +23,7 @@ namespace CrmProject.Entity.Entities
         public ICollection<AppTask> Tasks { get; set; } = new List<AppTask>();
         public ICollection<Income> Incomes { get; set; } = new List<Income>();
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+        // Bir müşterinin birden fazla projesi olabilir
 
     }
 }

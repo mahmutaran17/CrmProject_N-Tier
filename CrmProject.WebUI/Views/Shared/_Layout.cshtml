@@ -54,16 +54,36 @@
         <div class="flex items-center gap-3">
             <span class="font-manrope font-extrabold text-blue-900 text-xl tracking-tight">Executive Ledger</span>
         </div>
+    
         <div class="hidden md:flex items-center gap-8">
             <nav class="flex gap-6">
-                <a class="text-blue-900 font-inter font-semibold text-sm" href="/">Ana Sayfa</a>
+                <a class="text-slate-500 hover:text-blue-700 transition-colors font-inter font-semibold text-sm" href="/">Ana Sayfa</a>
                 <a class="text-slate-500 hover:text-blue-700 transition-colors font-inter font-semibold text-sm" href="/Project/Index">Projeler</a>
+                <a class="text-slate-500 hover:text-blue-700 transition-colors font-inter font-semibold text-sm" href="/AppTask/Index">Görevler</a>
+                <a class="text-slate-500 hover:text-blue-700 transition-colors font-inter font-semibold text-sm" href="/User/Index">Personeller</a>
             </nav>
         </div>
+
         <div class="flex items-center gap-4">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="flex items-center gap-3 pr-4 border-r border-slate-200">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold text-blue-900 leading-none">@User.Identity.Name</p>
+                        <p class="text-[10px] text-slate-500 font-medium">Aktif Kullanıcı</p>
+                    </div>
+                    <a href="/Login/Logout" class="material-symbols-outlined text-slate-400 hover:text-red-500 transition-colors" title="Çıkış Yap">logout</a>
+                </div>
+            }
+            else
+            {
+                <a href="/Login/Index" class="text-sm font-bold text-blue-900 hover:underline">Giriş Yap</a>
+            }
+
             <button class="material-symbols-outlined text-slate-500 hover:bg-slate-100 p-2 rounded-xl">notifications</button>
-            <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
-                <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff" />
+        
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 border border-slate-200">
+                <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(User.Identity.Name ?? "Misafir")&background=00346f&color=fff" />
             </div>
         </div>
     </header>

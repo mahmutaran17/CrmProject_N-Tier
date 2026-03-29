@@ -1,0 +1,77 @@
+﻿@model CrmProject.Entity.Entities.AppTask
+
+@{
+    ViewData["Title"] = "Görevi Güncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mb-8">
+    <h1 class="text-2xl font-manrope font-extrabold text-blue-900 tracking-tight">Görevi Güncelle</h1>
+    <p class="text-slate-500 font-inter text-sm mt-1">Mevcut görevin detaylarını aşağıdan düzenleyebilirsiniz.</p>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 max-w-4xl">
+    <form method="post" action="/AppTask/Update">
+        
+        <input type="hidden" asp-for="Id" />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-inter">
+            
+            <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Bağlı Olduğu Proje <span class="text-red-500">*</span></label>
+                <select asp-for="ProjectId" asp-items="ViewBag.Projects" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required>
+                    <option value="">-- Lütfen Bir Proje Seçiniz --</option>
+                </select>
+            </div>
+
+            <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Görev Başlığı <span class="text-red-500">*</span></label>
+                <input type="text" asp-for="Title" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required />
+            </div>
+
+            <div class="col-span-1 md:col-span-2">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Görev Açıklaması</label>
+                <textarea asp-for="Description" rows="4" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Görevi Atayan <span class="text-red-500">*</span></label>
+                <select asp-for="AssignedByUserId" asp-items="ViewBag.Users" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required>
+                    <option value="">-- Seçiniz --</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Görevi Yapacak Kişiler <span class="text-red-500">*</span></label>
+                <select name="SelectedUserIds" multiple asp-items="ViewBag.Users" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all h-24" required>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Başlangıç Tarihi <span class="text-red-500">*</span></label>
+                <input type="date" asp-for="StartDate" asp-format="{0:yyyy-MM-dd}" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required />
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Bitiş Tarihi (Deadline) <span class="text-red-500">*</span></label>
+                <input type="date" asp-for="DueDate" asp-format="{0:yyyy-MM-dd}" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required />
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Durum <span class="text-red-500">*</span></label>
+                <select asp-for="Status" asp-items="Html.GetEnumSelectList<CrmProject.Entity.Entities.AppTaskStatus>()" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required></select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Öncelik <span class="text-red-500">*</span></label>
+                <select asp-for="Priority" asp-items="Html.GetEnumSelectList<CrmProject.Entity.Entities.AppTaskPriority>()" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required></select>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-6">
+            <a href="/AppTask/Index" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Vazgeç</a>
+            <button type="submit" class="px-5 py-2.5 text-sm font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">update</span>
+                Değişiklikleri Kaydet
+            </button>
+        </div>
+    </form>
+</div>

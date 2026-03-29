@@ -24,5 +24,15 @@ namespace CrmProject.Business.Concrete
         public void Update(T entity) => _repository.Update(entity);
         public void Delete(T entity) => _repository.Delete(entity);
         public async Task<int> SaveAsync() => await _repository.SaveAsync();
+
+        public async Task<T?> GetSingleWithIncludesAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            return await _repository.GetSingleWithIncludesAsync(predicate, includes);
+        }
+
+        public async Task<List<T>> GetListWithIncludesAsync(Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] includes)
+        {
+            return await _repository.GetListWithIncludesAsync(filter, includes);
+        }
     }
 }

@@ -79,6 +79,42 @@ namespace CrmProject.DataAccess.Migrations
                     b.ToTable("AppTasks");
                 });
 
+            modelBuilder.Entity("CrmProject.Entity.Entities.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPerson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("CrmProject.Entity.Entities.Expense", b =>
                 {
                     b.Property<int>("Id")
@@ -177,6 +213,9 @@ namespace CrmProject.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -194,6 +233,8 @@ namespace CrmProject.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Projects");
                 });
@@ -350,6 +391,16 @@ namespace CrmProject.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CrmProject.Entity.Entities.Project", b =>
+                {
+                    b.HasOne("CrmProject.Entity.Entities.Customer", "Customer")
+                        .WithMany("Projects")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("CrmProject.Entity.Entities.TaskLog", b =>
                 {
                     b.HasOne("CrmProject.Entity.Entities.AppTask", "TaskItem")
@@ -375,6 +426,11 @@ namespace CrmProject.DataAccess.Migrations
             modelBuilder.Entity("CrmProject.Entity.Entities.AppTask", b =>
                 {
                     b.Navigation("TaskLogs");
+                });
+
+            modelBuilder.Entity("CrmProject.Entity.Entities.Customer", b =>
+                {
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("CrmProject.Entity.Entities.Project", b =>

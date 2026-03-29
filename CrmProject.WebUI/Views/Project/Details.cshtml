@@ -1,0 +1,140 @@
+﻿@model CrmProject.Entity.Entities.Project
+@{
+    ViewData["Title"] = "Proje Detayları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var tasks = ViewBag.Tasks as List<CrmProject.Entity.Entities.AppTask>;
+    var incomes = ViewBag.Incomes as List<CrmProject.Entity.Entities.Income>;
+    var expenses = ViewBag.Expenses as List<CrmProject.Entity.Entities.Expense>;
+}
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6 flex justify-between items-center">
+    <div>
+        <h1 class="text-2xl font-extrabold text-blue-900">@Model.ProjectName</h1>
+        <p class="text-sm text-slate-500 mt-1">@Model.Description</p>
+    </div>
+    <div class="text-right">
+        <span class="block text-xs font-bold text-slate-400 uppercase">Net Bakiye</span>
+        <span class="text-3xl font-black @(ViewBag.Balance >= 0 ? "text-green-600" : "text-red-600")">
+            @ViewBag.Balance.ToString("N2") ₺
+        </span>
+    </div>
+</div>
+
+<div class="border-b border-slate-200 mb-6">
+    <nav class="flex gap-4" aria-label="Tabs">
+        <button onclick="changeTab('tasks')" id="tab-tasks" class="tab-btn px-4 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600">Görevler (@tasks?.Count)</button>
+        <button onclick="changeTab('incomes')" id="tab-incomes" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-700">Gelirler</button>
+        <button onclick="changeTab('expenses')" id="tab-expenses" class="tab-btn px-4 py-3 text-sm font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-700">Giderler</button>
+    </nav>
+</div>
+
+<div id="content-tasks" class="tab-content block">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-lg text-slate-800">Görev Listesi</h2>
+            <a href="/AppTask/Create" class="text-sm font-bold text-blue-600 hover:underline">+ Yeni Görev Ekle</a>
+        </div>
+        @if (tasks != null && tasks.Any())
+        {
+            <div class="space-y-3">
+                @foreach (var t in tasks)
+                {
+                    <div class="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 flex justify-between items-center">
+                        <div>
+                            <span class="font-semibold text-slate-700 block">@t.Title</span>
+                            <div class="mt-1 flex items-center gap-2 text-xs text-slate-500">
+                                <span class="flex items-center gap-1 text-blue-600 font-medium">
+                                    <span class="material-symbols-outlined text-[14px]">group</span>
+                                    @(t.AssignedUsers != null && t.AssignedUsers.Any()
+                                        ? string.Join(", ", t.AssignedUsers.Select(u => u.FirstName + " " + u.LastName))
+                                        : "Personel Atanmamış")
+                                </span>
+                                <span class="text-slate-300">|</span>
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">event</span>
+                                    @t.DueDate.ToString("dd.MM.yyyy")
+                                </span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-3 py-1 bg-slate-100 text-slate-600 rounded-md font-bold uppercase border border-slate-200">@t.Status</span>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+
+            <p class="text-sm text-slate-500">Görev bulunamadı.</p>
+        }
+    </div>
+</div>
+
+<div id="content-incomes" class="tab-content hidden">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-lg text-slate-800">Gelirler</h2>
+            <a href="/Income/Create" class="text-sm font-bold text-green-600 hover:underline">+ Gelir Ekle</a>
+        </div>
+        @if (incomes != null && incomes.Any())
+        {
+            <ul class="space-y-3">
+                @foreach (var inc in incomes)
+                {
+                    <li class="flex justify-between border-b border-slate-50 pb-2">
+                        <span class="text-sm text-slate-600">@inc.Source (@inc.Date.ToString("dd.MM.yyyy"))</span>
+                        <span class="font-bold text-green-600">+@inc.Amount.ToString("N2") ₺</span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+
+            <p class="text-sm text-slate-500">Gelir kaydı yok.</p>
+        }
+    </div>
+</div>
+
+<div id="content-expenses" class="tab-content hidden">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-lg text-slate-800">Giderler</h2>
+            <a href="/Expense/Create" class="text-sm font-bold text-red-600 hover:underline">+ Gider Ekle</a>
+        </div>
+        @if (expenses != null && expenses.Any())
+        {
+            <ul class="space-y-3">
+                @foreach (var exp in expenses)
+                {
+                    <li class="flex justify-between border-b border-slate-50 pb-2">
+                        <span class="text-sm text-slate-600">@exp.Category (@exp.Date.ToString("dd.MM.yyyy"))</span>
+                        <span class="font-bold text-red-600">-@exp.Amount.ToString("N2") ₺</span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+
+            <p class="text-sm text-slate-500">Gider kaydı yok.</p>
+        }
+    </div>
+</div>
+
+<script>
+    function changeTab(tabName) {
+        // Tüm içerikleri gizle ve buton stillerini sıfırla
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('text-blue-600', 'border-blue-600');
+            btn.classList.add('text-slate-500', 'border-transparent');
+        });
+
+        // Seçilen sekmeyi göster ve buton stilini aktif yap
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+        var activeBtn = document.getElementById('tab-' + tabName);
+        activeBtn.classList.remove('text-slate-500', 'border-transparent');
+        activeBtn.classList.add('text-blue-600', 'border-blue-600');
+    }
+</script>

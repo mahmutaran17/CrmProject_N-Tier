@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmProject.DataAccess.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    [Migration("20260322212423_UpdateAppTaskEnums")]
-    partial class UpdateAppTaskEnums
+    [Migration("20260328143110_Setup_v1")]
+    partial class Setup_v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,21 @@ namespace CrmProject.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AppTaskUser", b =>
+                {
+                    b.Property<int>("AssignedTasksId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AssignedUsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AssignedTasksId", "AssignedUsersId");
+
+                    b.HasIndex("AssignedUsersId");
+
+                    b.ToTable("AppTaskAssignedUsers", (string)null);
+                });
+
             modelBuilder.Entity("CrmProject.Entity.Entities.AppTask", b =>
                 {
                     b.Property<int>("Id")
@@ -34,9 +49,6 @@ namespace CrmProject.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AssignedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AssignedToUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -65,11 +77,45 @@ namespace CrmProject.DataAccess.Migrations
 
                     b.HasIndex("AssignedByUserId");
 
-                    b.HasIndex("AssignedToUserId");
-
                     b.HasIndex("ProjectId");
 
                     b.ToTable("AppTasks");
+                });
+
+            modelBuilder.Entity("CrmProject.Entity.Entities.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPerson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("CrmProject.Entity.Entities.Expense", b =>
@@ -170,6 +216,9 @@ namespace CrmProject.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -187,6 +236,8 @@ namespace CrmProject.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Projects");
                 });
@@ -276,17 +327,26 @@ namespace CrmProject.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("AppTaskUser", b =>
+                {
+                    b.HasOne("CrmProject.Entity.Entities.AppTask", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedTasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CrmProject.Entity.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CrmProject.Entity.Entities.AppTask", b =>
                 {
                     b.HasOne("CrmProject.Entity.Entities.User", "AssignedByUser")
                         .WithMany("CreatedTasks")
                         .HasForeignKey("AssignedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CrmProject.Entity.Entities.User", "AssignedToUser")
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("AssignedToUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -297,8 +357,6 @@ namespace CrmProject.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("AssignedByUser");
-
-                    b.Navigation("AssignedToUser");
 
                     b.Navigation("Project");
                 });
@@ -336,6 +394,16 @@ namespace CrmProject.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CrmProject.Entity.Entities.Project", b =>
+                {
+                    b.HasOne("CrmProject.Entity.Entities.Customer", "Customer")
+                        .WithMany("Projects")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("CrmProject.Entity.Entities.TaskLog", b =>
                 {
                     b.HasOne("CrmProject.Entity.Entities.AppTask", "TaskItem")
@@ -363,6 +431,11 @@ namespace CrmProject.DataAccess.Migrations
                     b.Navigation("TaskLogs");
                 });
 
+            modelBuilder.Entity("CrmProject.Entity.Entities.Customer", b =>
+                {
+                    b.Navigation("Projects");
+                });
+
             modelBuilder.Entity("CrmProject.Entity.Entities.Project", b =>
                 {
                     b.Navigation("Expenses");
@@ -379,8 +452,6 @@ namespace CrmProject.DataAccess.Migrations
 
             modelBuilder.Entity("CrmProject.Entity.Entities.User", b =>
                 {
-                    b.Navigation("AssignedTasks");
-
                     b.Navigation("CreatedTasks");
 
                     b.Navigation("Notifications");

@@ -23,6 +23,7 @@ namespace CrmProject.DataAccess.Context
         public DbSet<Income> Incomes => Set<Income>();
         public DbSet<Expense> Expenses => Set<Expense>();
         public DbSet<Notification> Notifications => Set<Notification>();
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,10 +53,10 @@ namespace CrmProject.DataAccess.Context
             //apptask => assignToUser many-many
             modelBuilder.Entity<AppTask>()
                 .HasMany(t => t.AssignedUsers)
-                .WithMany (u => u.AssignedTasks)
+                .WithMany(u => u.AssignedTasks)
                 .UsingEntity(j => j.ToTable("AppTaskAssignedUsers"));
-            
-            
+
+
             //tasklog => appTask many-one
             modelBuilder.Entity<TaskLog>()
                 .HasOne(tl => tl.TaskItem)
@@ -92,6 +93,12 @@ namespace CrmProject.DataAccess.Context
             modelBuilder.Entity<Expense>()
                 .Property(e => e.Amount)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Project>()
+                .HasOne(p => p.Customer)
+                .WithMany(c => c.Projects)
+                .HasForeignKey(p => p.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

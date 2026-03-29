@@ -1,8 +1,96 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<CrmProject.Entity.Entities.AppTask>
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined">folder_open</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Toplam Proje</p>
+        <h3 class="text-2xl font-black text-slate-900">@ViewBag.TotalProjects</h3>
+    </div>
+
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined">tactic</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Bekleyen Görevler</p>
+        <h3 class="text-2xl font-black text-slate-900">@ViewBag.PendingTasks</h3>
+    </div>
+
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined">group</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Aktif Personel</p>
+        <h3 class="text-2xl font-black text-slate-900">@ViewBag.ActiveUsers</h3>
+    </div>
+
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined">done_all</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Toplam İşlem</p>
+        <h3 class="text-2xl font-black text-slate-900">@ViewBag.TotalTasks</h3>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+    <div class="bg-green-50 p-6 rounded-2xl border border-green-200 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-green-600">account_balance_wallet</span>
+            <h3 class="text-green-800 font-bold text-sm uppercase tracking-wider">Toplam Gelir</h3>
+        </div>
+        <p class="text-3xl font-extrabold text-green-600">+@ViewBag.TotalIncome.ToString("N2") ₺</p>
+    </div>
+
+    <div class="bg-red-50 p-6 rounded-2xl border border-red-200 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-red-600">payments</span>
+            <h3 class="text-red-800 font-bold text-sm uppercase tracking-wider">Toplam Gider</h3>
+        </div>
+        <p class="text-3xl font-extrabold text-red-600">-@ViewBag.TotalExpense.ToString("N2") ₺</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+            <h2 class="font-bold text-slate-900">Son Eklenen Görevler</h2>
+            <a href="/AppTask/Index" class="text-blue-600 text-xs font-bold hover:underline">Tümünü Gör</a>
+        </div>
+        <table class="w-full text-left">
+            <tbody class="divide-y divide-slate-50">
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4">
+                            <p class="text-sm font-bold text-slate-800">@item.Title</p>
+                            <p class="text-xs text-slate-400">@item.DueDate.ToShortDateString()</p>
+                        </td>
+                        <td class="p-4 text-right">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-blue-50 text-blue-700">@item.Status</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bg-blue-900 rounded-3xl p-8 text-white shadow-xl shadow-blue-200">
+        <h2 class="text-xl font-bold mb-6">Hızlı İşlemler</h2>
+        <div class="space-y-4">
+            <a href="/AppTask/Create" class="flex items-center gap-4 bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all border border-white/10">
+                <span class="material-symbols-outlined">add_task</span>
+                <span class="text-sm font-bold">Yeni Görev Tanımla</span>
+            </a>
+            <a href="/Project/AddProject" class="flex items-center gap-4 bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all border border-white/10">
+                <span class="material-symbols-outlined">create_new_folder</span>
+                <span class="text-sm font-bold">Yeni Proje Başlat</span>
+            </a>
+        </div>
+    </div>
 </div>
