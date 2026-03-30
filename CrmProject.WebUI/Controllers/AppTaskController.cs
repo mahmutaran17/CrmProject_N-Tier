@@ -12,12 +12,14 @@ namespace CrmProject.WebUI.Controllers
         private readonly IAppTaskService _appTaskService;
         private readonly IProjectService _projectService;
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService; // EKLENDİ
 
-        public AppTaskController(IAppTaskService appTaskService, IProjectService projectService, IUserService userService)
+        public AppTaskController(IAppTaskService appTaskService, IProjectService projectService, IUserService userService, INotificationService notificationService)
         {
             _appTaskService = appTaskService;
             _projectService = projectService;
             _userService = userService;
+            _notificationService = notificationService;
         }
 
         public async Task<IActionResult> Index()
@@ -57,8 +59,28 @@ namespace CrmProject.WebUI.Controllers
                 }
             }
 
+            // 1. Senin mevcut kodun: Görevi veritabanına kaydediyoruz
             await _appTaskService.AddAsync(task);
             await _appTaskService.SaveAsync();
+
+            // 2. YENİ EKLENEN KISIM: Atanan personellere bildirim gönderiyoruz
+            if (SelectedUserIds != null)
+            {
+                foreach (var userId in SelectedUserIds)
+                {
+                    var notification = new Notification
+                    {
+                        UserId = userId,
+                        Message = $"'{task.Title}' başlıklı yeni bir görev size atandı.",
+                        IsRead = false,
+                        CreatedAt = DateTime.Now
+                    };
+                    // Controller'ın üst kısmında _notificationService'i DI ile projeye dahil ettiğini varsayıyorum
+                    await _notificationService.AddAsync(notification);
+                }
+                await _notificationService.SaveAsync();
+            }
+
             return RedirectToAction("Index");
         }
 

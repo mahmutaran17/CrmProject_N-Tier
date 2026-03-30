@@ -31,6 +31,8 @@ builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<IIncomeService, IncomeManager>();
 builder.Services.AddScoped<ITaskLogRepository, TaskLogRepository>();
 builder.Services.AddScoped<ITaskLogService, TaskLogManager>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationManager>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
