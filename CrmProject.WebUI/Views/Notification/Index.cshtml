@@ -24,8 +24,8 @@
         <div class="divide-y divide-slate-100">
             @foreach (var item in Model)
             {
-                <div class="p-6 flex items-start gap-4 hover:bg-slate-50 transition-colors @(item.IsRead ? "opacity-70" : "")">
-                    
+                <a href="/Notification/ReadAndRedirect/@item.Id" class="block p-6 flex items-start gap-4 hover:bg-slate-50 transition-colors @(item.IsRead ? "opacity-70" : "")">
+        
                     <div class="mt-1 flex-shrink-0">
                         @if (!item.IsRead)
                         {
@@ -44,19 +44,14 @@
                         <p class="text-sm font-bold @(item.IsRead ? "text-slate-600" : "text-slate-900")">
                             @item.Message
                         </p>
-                        <span class="text-xs text-slate-400 mt-2 block flex items-center gap-1">
+                        <span class="text-xs text-slate-400 mt-2 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[14px]">schedule</span>
                             @item.CreatedAt.ToString("dd.MM.yyyy HH:mm")
                         </span>
                     </div>
-
-                    @if (!item.IsRead)
-                    {
-                        <a href="/Notification/ReadAndRedirect/@item.Id" class="text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
-                            Görüntüle
-                        </a>
-                    }
-                </div>
+        
+                    <span class="material-symbols-outlined text-slate-300">chevron_right</span>
+                </a>
             }
         </div>
     }

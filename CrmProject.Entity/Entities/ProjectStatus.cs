@@ -10,6 +10,7 @@ namespace CrmProject.Entity.Entities
     {
         Aktif = 1,
         Beklemede = 2,
-        Silindi = 3
+        Tamamlandi = 3,
+        Silindi = 4
     }
 }

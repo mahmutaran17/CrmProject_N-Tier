@@ -33,7 +33,9 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
         <div class="flex justify-between items-center mb-4">
             <h2 class="font-bold text-lg text-slate-800">Görev Listesi</h2>
-            <a href="/AppTask/Create" class="text-sm font-bold text-blue-600 hover:underline">+ Yeni Görev Ekle</a>
+            <a href="/AppTask/Create?projectId=@Model.Id" class="bg-blue-900 text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">add_task</span> Yeni Görev Ekle
+            </a>
         </div>
         @if (tasks != null && tasks.Any())
         {
@@ -53,7 +55,7 @@
                                 <span class="text-slate-300">|</span>
                                 <span class="flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">event</span>
-                                    @t.DueDate.ToString("dd.MM.yyyy")
+                                    @(t.DueDate.HasValue? t.DueDate.Value.ToString("dd.MM.yyyy") : "Belirtilmedi")
                                 </span>
                             </div>
                         </div>

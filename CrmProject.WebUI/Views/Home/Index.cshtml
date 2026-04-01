@@ -5,32 +5,33 @@
 }
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+    
+    <div onclick="window.location='/Project/Index';" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <span class="material-symbols-outlined">folder_open</span>
         </div>
         <p class="text-slate-500 text-sm font-medium">Toplam Proje</p>
         <h3 class="text-2xl font-black text-slate-900">@ViewBag.TotalProjects</h3>
     </div>
 
-    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4">
+    <div onclick="window.location='/AppTask/Index';" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <span class="material-symbols-outlined">tactic</span>
         </div>
         <p class="text-slate-500 text-sm font-medium">Bekleyen Görevler</p>
         <h3 class="text-2xl font-black text-slate-900">@ViewBag.PendingTasks</h3>
     </div>
 
-    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4">
+    <div onclick="window.location='/User/Index';" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <span class="material-symbols-outlined">group</span>
         </div>
         <p class="text-slate-500 text-sm font-medium">Aktif Personel</p>
         <h3 class="text-2xl font-black text-slate-900">@ViewBag.ActiveUsers</h3>
     </div>
 
-    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+    <div onclick="window.location='/AppTask/Index';" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <span class="material-symbols-outlined">done_all</span>
         </div>
         <p class="text-slate-500 text-sm font-medium">Toplam İşlem</p>
@@ -39,17 +40,17 @@
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-    <div class="bg-green-50 p-6 rounded-2xl border border-green-200 shadow-sm">
+    <div onclick="window.location='/Income/Index';" class="bg-green-50 p-6 rounded-2xl border border-green-200 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all group">
         <div class="flex items-center gap-2 mb-2">
-            <span class="material-symbols-outlined text-green-600">account_balance_wallet</span>
+            <span class="material-symbols-outlined text-green-600 group-hover:scale-110 transition-transform">account_balance_wallet</span>
             <h3 class="text-green-800 font-bold text-sm uppercase tracking-wider">Toplam Gelir</h3>
         </div>
         <p class="text-3xl font-extrabold text-green-600">+@ViewBag.TotalIncome.ToString("N2") ₺</p>
     </div>
 
-    <div class="bg-red-50 p-6 rounded-2xl border border-red-200 shadow-sm">
+    <div onclick="window.location='/Expense/Index';" class="bg-red-50 p-6 rounded-2xl border border-red-200 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md transition-all group">
         <div class="flex items-center gap-2 mb-2">
-            <span class="material-symbols-outlined text-red-600">payments</span>
+            <span class="material-symbols-outlined text-red-600 group-hover:scale-110 transition-transform">payments</span>
             <h3 class="text-red-800 font-bold text-sm uppercase tracking-wider">Toplam Gider</h3>
         </div>
         <p class="text-3xl font-extrabold text-red-600">-@ViewBag.TotalExpense.ToString("N2") ₺</p>
@@ -66,13 +67,13 @@
             <tbody class="divide-y divide-slate-50">
                 @foreach (var item in Model)
                 {
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="window.location='/AppTask/Details/@item.Id';">
                         <td class="p-4">
-                            <p class="text-sm font-bold text-slate-800">@item.Title</p>
-                            <p class="text-xs text-slate-400">@item.DueDate.ToShortDateString()</p>
+                            <p class="text-sm font-bold text-[#001f48]">@item.Title</p>
+                            <p class="text-xs text-slate-400">@(item.DueDate.HasValue? item.DueDate.Value.ToShortDateString() : "Belirtilmedi")</p>
                         </td>
                         <td class="p-4 text-right">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-blue-50 text-blue-700">@item.Status</span>
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase border border-slate-200 text-slate-700 bg-slate-50">@item.Status</span>
                         </td>
                     </tr>
                 }
@@ -80,7 +81,7 @@
         </table>
     </div>
 
-    <div class="bg-blue-900 rounded-3xl p-8 text-white shadow-xl shadow-blue-200">
+    <div class="bg-[#001f48] rounded-3xl p-8 text-white shadow-xl">
         <h2 class="text-xl font-bold mb-6">Hızlı İşlemler</h2>
         <div class="space-y-4">
             <a href="/AppTask/Create" class="flex items-center gap-4 bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all border border-white/10">
@@ -90,6 +91,14 @@
             <a href="/Project/AddProject" class="flex items-center gap-4 bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all border border-white/10">
                 <span class="material-symbols-outlined">create_new_folder</span>
                 <span class="text-sm font-bold">Yeni Proje Başlat</span>
+            </a>
+            <a href="/Income/Create" class="flex items-center gap-4 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-100 p-4 rounded-2xl transition-all border border-emerald-500/30">
+                <span class="material-symbols-outlined">add_circle</span>
+                <span class="text-sm font-bold">Gelir Kaydı Gir</span>
+            </a>
+            <a href="/Expense/Create" class="flex items-center gap-4 bg-rose-500/20 hover:bg-rose-500/40 text-rose-100 p-4 rounded-2xl transition-all border border-rose-500/30">
+                <span class="material-symbols-outlined">remove_circle</span>
+                <span class="text-sm font-bold">Gider Kaydı Gir</span>
             </a>
         </div>
     </div>

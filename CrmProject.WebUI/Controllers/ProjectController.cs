@@ -53,6 +53,7 @@ namespace CrmProject.WebUI.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             //bringing the id from db
@@ -75,6 +76,11 @@ namespace CrmProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProject(Project project)
         {
+            if (!User.IsInRole("Admin") && project.Status == ProjectStatus.Silindi)
+            {
+                project.Status = ProjectStatus.Aktif;
+            }
+
             _projectService.Update(project);
             await _projectService.SaveAsync();
             return RedirectToAction("Index");

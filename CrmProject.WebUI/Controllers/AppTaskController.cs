@@ -22,18 +22,58 @@ namespace CrmProject.WebUI.Controllers
             _notificationService = notificationService;
         }
 
+        // --- GÜNCELLENMİŞ INDEX METODU ---
         public async Task<IActionResult> Index()
         {
-            var tasks = await _appTaskService.GetListWithIncludesAsync(null, x => x.Project);
+            var userIdStr = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            int currentUserId = string.IsNullOrEmpty(userIdStr) ? 0 : int.Parse(userIdStr);
+            bool isAdmin = User.IsInRole("Admin");
+
+            IEnumerable<AppTask> tasks;
+
+            if (isAdmin)
+            {
+                // Admin ise tüm görevleri getir. Atayan kişiyi (AssignedByUser) de Include et!
+                tasks = await _appTaskService.GetListWithIncludesAsync(null, x => x.Project, x => x.AssignedByUser);
+            }
+            else
+            {
+                // Personel ise sadece AssignedUsers listesinde kendisi olanları getir
+                tasks = await _appTaskService.GetListWithIncludesAsync(
+                    x => x.AssignedUsers.Any(u => u.Id == currentUserId),
+                    x => x.Project,
+                    x => x.AssignedByUser
+                );
+            }
+
             return View(tasks);
+        }
+
+        // --- YENİ EKLENEN DETAY METODU ---
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            // Görevi tüm ilişkileriyle (Projesi, Ekibi, Logları, Atayan Kişisi) çekiyoruz
+            var taskList = await _appTaskService.GetListWithIncludesAsync(
+                x => x.Id == id,
+                y => y.Project,
+                y => y.AssignedByUser,
+                y => y.AssignedUsers,
+                y => y.TaskLogs
+            );
+
+            var task = taskList.FirstOrDefault();
+            if (task == null) return NotFound();
+
+            return View(task);
         }
 
         // --- GÖREV EKLEME (CREATE) ---
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? projectId)
         {
             var projects = await _projectService.GetWhereAsync(x => x.Status == ProjectStatus.Aktif);
-            ViewBag.Projects = new SelectList(projects, "Id", "ProjectName");
+            ViewBag.Projects = new SelectList(projects, "Id", "ProjectName", projectId);
 
             var users = await _userService.GetWhereAsync(x => x.IsActive);
             ViewBag.Users = new SelectList(users, "Id", "FirstName");
@@ -106,6 +146,20 @@ namespace CrmProject.WebUI.Controllers
             _appTaskService.Update(task);
             await _appTaskService.SaveAsync();
             return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int id, AppTaskStatus status)
+        {
+            var task = await _appTaskService.GetByIdAsync(id);
+            if (task != null)
+            {
+                task.Status = status;
+                _appTaskService.Update(task);
+                await _appTaskService.SaveAsync();
+            }
+            return RedirectToAction("Details", new { id = id });
         }
     }
 }
