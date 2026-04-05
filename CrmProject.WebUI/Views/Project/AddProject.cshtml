@@ -15,15 +15,8 @@
 
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Müşteri (Cari) Seçin <span class="text-xs font-normal text-slate-400 ml-1">(Opsiyonel)</span></label>
-                <select name="CustomerId" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all">
+                <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all">
                     <option value="">-- Müşteri Yok (İç Proje / Genel) --</option>
-                    @if (ViewBag.Customers != null)
-                    {
-                        foreach (var item in ViewBag.Customers as List<CrmProject.Entity.Entities.Customer>)
-                        {
-                            <option value="@item.Id">@item.CustomerName</option>
-                        }
-                    }
                 </select>
             </div>
 

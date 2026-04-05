@@ -6,20 +6,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CrmProject.WebUI.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
 
-        // Dependency Injection ile servisleri alıyoruz
         public UserController(IUserService userService, IRoleService roleService)
         {
             _userService = userService;
             _roleService = roleService;
         }
 
-        // --- KULLANICI LİSTESİ ---
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Index()
         {
             // Sadece aktif kullanıcıları getir (Soft-Delete mantığına uygun)
@@ -27,8 +26,8 @@ namespace CrmProject.WebUI.Controllers
             return View(values);
         }
 
-        // --- YENİ KULLANICI EKLEME (GET) ---
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddUser()
         {
             // Rolleri veritabanından çekip Dropdown (Seçim Kutusu) için hazırlıyoruz
@@ -40,6 +39,7 @@ namespace CrmProject.WebUI.Controllers
 
         // --- YENİ KULLANICI EKLEME (POST) ---
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddUser(User user)
         {
             // Sistemsel varsayılan değerleri arkaplanda biz atıyoruz
@@ -48,10 +48,10 @@ namespace CrmProject.WebUI.Controllers
 
             await _userService.AddAsync(user);
             await _userService.SaveAsync();
-
+            TempData["Success"] = $"Kullanici Başarıyla Eklendi. ";
             return RedirectToAction("Index");
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var userValue = await _userService.GetByIdAsync(id);
@@ -61,11 +61,20 @@ namespace CrmProject.WebUI.Controllers
                 userValue.IsActive = false;
                 _userService.Update(userValue);
                 await _userService.SaveAsync();
+
+                TempData["Success"] = $"{userValue.FirstName} {userValue.LastName} isimli personel sistemden silindi.";
+            }
+
+            else
+            {
+                //id yanlış gelirse
+                TempData["Error"] = "Silinmek istenen personel bulunamadı!";
             }
             return RedirectToAction("Index");
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(int id)
         {
             var userValue = await _userService.GetByIdAsync(id);
@@ -152,6 +161,8 @@ namespace CrmProject.WebUI.Controllers
 
             if (currentUser == null)
                 return RedirectToAction("Index", "Login");
+
+            
 
             return View(currentUser);
         }

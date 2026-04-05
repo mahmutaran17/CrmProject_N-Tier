@@ -3,6 +3,8 @@ using CrmProject.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Threading.Tasks;
 
 namespace CrmProject.WebUI.Controllers
 {
@@ -20,7 +22,6 @@ namespace CrmProject.WebUI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Senin nav property ismin 'TaskItem' olduğu için onu Include ediyoruz
             var logs = await _taskLogService.GetListWithIncludesAsync(null, x => x.TaskItem);
             return View(logs);
         }
@@ -36,12 +37,16 @@ namespace CrmProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TaskLog taskLog)
         {
-            // Senin entity'ndeki tarih property'si
-            taskLog.CreatedAt = System.DateTime.Now;
+            taskLog.CreatedAt = DateTime.Now;
 
             await _taskLogService.AddAsync(taskLog);
             await _taskLogService.SaveAsync();
-            return RedirectToAction("Index");
+
+            // MESAJ EKLENDİ
+            TempData["Success"] = "Görev geçmişine yeni bir not başarıyla eklendi.";
+
+            // Log ekledikten sonra kullanıcının kaldığı detaya dönebilmesi için:
+            return RedirectToAction("Details", "AppTask", new { id = taskLog.TaskItemId });
         }
     }
 }

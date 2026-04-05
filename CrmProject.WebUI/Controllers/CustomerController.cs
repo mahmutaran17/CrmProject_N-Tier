@@ -7,7 +7,7 @@ namespace CrmProject.WebUI.Controllers
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
-        
+
 
         public CustomerController(ICustomerService customerService)
         {
@@ -42,7 +42,8 @@ namespace CrmProject.WebUI.Controllers
         public async Task<IActionResult> UpdateCustomer(int id)
         {
             var value = await _customerService.GetByIdAsync(id);
-            return View(value); // İşte bu satır az önce hata verdiğin UpdateCustomer.cshtml'i arıyor
+
+            return View(value); 
         }
 
         [HttpPost]
@@ -51,18 +52,28 @@ namespace CrmProject.WebUI.Controllers
             customer.Status = true;
             _customerService.Update(customer);
             await _customerService.SaveAsync();
+            TempData["Success"] = $"{customer.CustomerName} isimli müşteri başarıyla güncellendi. ";
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             var value = await _customerService.GetByIdAsync(id);
+
             if (value != null)
             {
                 value.Status = false; // Soft delete
                 _customerService.Update(value);
-                await _customerService.SaveAsync(); // KAYDETMEYİ UNUTMA
+                await _customerService.SaveAsync();
+
+                TempData["Success"] = $"{value.CustomerName} isimli müşteri sistemden silindi.";
             }
+            else
+            {
+                //id yanlış gelirse
+                TempData["Error"] = "Silinmek istenen müşteri bulunamadı!";
+            }
+
             return RedirectToAction("Index");
         }
     }

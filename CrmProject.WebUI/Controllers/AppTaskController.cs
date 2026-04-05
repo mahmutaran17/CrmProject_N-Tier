@@ -120,7 +120,7 @@ namespace CrmProject.WebUI.Controllers
                 }
                 await _notificationService.SaveAsync();
             }
-
+            TempData["Success"] = $"'{task.Title}' başlıklı görev başarıyla oluşturuldu ve bildirimler gönderildi.";
             return RedirectToAction("Index");
         }
 
@@ -142,9 +142,42 @@ namespace CrmProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(AppTask task, List<int> SelectedUserIds)
         {
-            // Görev bilgileri güncelleniyor
-            _appTaskService.Update(task);
-            await _appTaskService.SaveAsync();
+            // 1. Veritabanındaki MEVCUT görevi (atanan personelleriyle birlikte) buluyoruz
+            var existingTasks = await _appTaskService.GetListWithIncludesAsync(x => x.Id == task.Id, y => y.AssignedUsers);
+            var existingTask = existingTasks.FirstOrDefault();
+
+            if (existingTask != null)
+            {
+                // 2. Temel bilgileri güncelliyoruz (Title, Description vs. senin modelinde hangileri varsa)
+                existingTask.Title = task.Title;
+                existingTask.Description = task.Description;
+                existingTask.DueDate = task.DueDate;
+                existingTask.ProjectId = task.ProjectId;
+                existingTask.Status = task.Status;
+
+                // 3. Atanan Personelleri Güncelle (Önce eskileri temizle, sonra yenileri ekle)
+                existingTask.AssignedUsers.Clear();
+
+                if (SelectedUserIds != null)
+                {
+                    foreach (var userId in SelectedUserIds)
+                    {
+                        var user = await _userService.GetByIdAsync(userId);
+                        if (user != null) existingTask.AssignedUsers.Add(user);
+                    }
+                }
+
+                // 4. Veritabanına kaydet
+                _appTaskService.Update(existingTask);
+                await _appTaskService.SaveAsync();
+
+                TempData["Success"] = $"'{task.Title}' başlıklı görev ve atanan personeller başarıyla güncellendi.";
+            }
+            else
+            {
+                TempData["Error"] = "Güncellenmek istenen görev sistemde bulunamadı.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -158,6 +191,7 @@ namespace CrmProject.WebUI.Controllers
                 task.Status = status;
                 _appTaskService.Update(task);
                 await _appTaskService.SaveAsync();
+                TempData["Success"] = $"'{task.Title}' başlıklı görev başarıyla Güncellendi.";
             }
             return RedirectToAction("Details", new { id = id });
         }
