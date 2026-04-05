@@ -1,12 +1,15 @@
 ﻿using CrmProject.Business.Abstract;
 using CrmProject.Entity.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CrmProject.WebUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class IncomeController : Controller
     {
+
         private readonly IIncomeService _incomeService;
         private readonly IProjectService _projectService;
 

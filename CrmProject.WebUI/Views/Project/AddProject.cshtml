@@ -5,7 +5,8 @@
 }
 
 <div class="mb-8">
-    <h1 class="text-2xl font-manrope font-extrabold text-blue-900 tracking-tight">Yeni Proje Ekle</h1>
+    <h1 class="text-2xl font-manrope font-extrabold text-[#001f48] tracking-tight">Yeni Proje Ekle</h1>
+    <p class="text-sm text-slate-500 mt-1">Sisteme yeni bir proje veya portföy tanımlayın.</p>
 </div>
 
 <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 max-w-4xl">
@@ -13,9 +14,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-inter">
 
             <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Müşteri (Cari) Seçin <span class="text-red-500">*</span></label>
-                <select asp-for="CustomerId" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5" required>
-                    <option value="">-- Müşteri Seçiniz --</option>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Müşteri (Cari) Seçin <span class="text-xs font-normal text-slate-400 ml-1">(Opsiyonel)</span></label>
+                <select name="CustomerId" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all">
+                    <option value="">-- Müşteri Yok (İç Proje / Genel) --</option>
                     @if (ViewBag.Customers != null)
                     {
                         foreach (var item in ViewBag.Customers as List<CrmProject.Entity.Entities.Customer>)
@@ -28,29 +29,31 @@
 
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Proje Adı <span class="text-red-500">*</span></label>
-                <input type="text" asp-for="ProjectName" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5" required />
+                <input type="text" asp-for="ProjectName" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required placeholder="Örn: GrowHub Portal Revizyonu" />
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Başlangıç Tarihi <span class="text-red-500">*</span></label>
-                <input type="date" asp-for="StartDate" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5" required />
+                <input type="date" asp-for="StartDate" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" required />
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Bitiş Tarihi</label>
-                <input type="date" asp-for="EndDate" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5" />
+                <input type="date" asp-for="EndDate" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" />
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Proje Detayları</label>
-                <textarea asp-for="Description" rows="4" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5"></textarea>
+                <textarea asp-for="Description" rows="4" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="Projenin amacı, kapsamı..."></textarea>
             </div>
 
         </div>
 
         <div class="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-6">
-            <a href="/Project/Index" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl">Vazgeç</a>
-            <button type="submit" class="px-5 py-2.5 text-sm font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-xl">Kaydet</button>
+            <a href="/Project/Index" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Vazgeç</a>
+            <button type="submit" class="px-5 py-2.5 text-sm font-semibold text-white bg-[#00346f] hover:bg-[#001f48] rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">save</span> Kaydet
+            </button>
         </div>
     </form>
 </div>

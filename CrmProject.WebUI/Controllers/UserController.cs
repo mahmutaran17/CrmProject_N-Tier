@@ -75,13 +75,85 @@ namespace CrmProject.WebUI.Controllers
 
             return View(userValue);
         }
-        [HttpPost]
-        public async Task<IActionResult> UpdateUser(User user)
-        {
-            _userService.Update(user);
-            await _userService.SaveAsync();
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser(User user, IFormFile? profileImage)
+        {
+            // Veritabanındaki eski kullanıcıyı bul
+            var existingUser = await _userService.GetByIdAsync(user.Id);
+
+            if (existingUser != null)
+            {
+                // Temel bilgileri güncelle
+                existingUser.FirstName = user.FirstName;
+                existingUser.LastName = user.LastName;
+                existingUser.Email = user.Email;
+                existingUser.RoleId = user.RoleId;
+                existingUser.IsActive = user.IsActive;
+
+                // Şifre kutusu doluysa şifreyi güncelle, boşsa eski şifrede bırak
+                if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+                {
+                    existingUser.PasswordHash = user.PasswordHash;
+                }
+
+                // --- FOTOĞRAF YÜKLEME KISMI ---
+                if (profileImage != null && profileImage.Length > 0)
+                {
+                    var extension = Path.GetExtension(profileImage.FileName);
+                    var newImageName = Guid.NewGuid().ToString() + extension;
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/profiles");
+
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+
+                    var saveLocation = Path.Combine(folderPath, newImageName);
+
+                    using (var stream = new FileStream(saveLocation, FileMode.Create))
+                    {
+                        await profileImage.CopyToAsync(stream);
+                    }
+
+                    // Fotoğrafın adını veritabanına kaydet
+                    existingUser.ProfileImageUrl = "/images/profiles/" + newImageName;
+                }
+
+                _userService.Update(existingUser);
+                await _userService.SaveAsync();
+
+                TempData["Success"] = "Profil başarıyla güncellendi.";
+            }
+
+            // Giriş yapan kişi ile güncellenen kişi aynıysa kendi profiline dönsün
+            var currentUserIdStr = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (currentUserIdStr == user.Id.ToString())
+            {
+                return RedirectToAction("MyProfile");
+            }
+
+            // Admin başka bir personeli güncellediyse listeye dönsün
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> MyProfile()
+        {
+            var userIdStr = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr))
+                return RedirectToAction("Index", "Login");
+
+            int currentUserId = int.Parse(userIdStr);
+            var currentUser = await _userService.GetByIdAsync(currentUserId);
+
+            if (currentUser == null)
+                return RedirectToAction("Index", "Login");
+
+            return View(currentUser);
         }
     }
 }

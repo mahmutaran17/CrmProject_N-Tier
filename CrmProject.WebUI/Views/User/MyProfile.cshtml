@@ -1,0 +1,78 @@
+﻿@model CrmProject.Entity.Entities.User
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="max-w-3xl mx-auto mt-8">
+    
+    <div class="bg-gradient-to-r from-[#001f48] to-[#00346f] rounded-[2rem] p-8 text-white flex items-center gap-6 shadow-xl relative overflow-hidden mb-8">
+        <div class="absolute -right-10 -top-10 opacity-10">
+            <span class="material-symbols-outlined text-[150px]">admin_panel_settings</span>
+        </div>
+
+        <div class="w-24 h-24 rounded-full bg-white/20 border-4 border-white/30 flex items-center justify-center flex-shrink-0 z-10 overflow-hidden">
+            @if (!string.IsNullOrEmpty(Model.ProfileImageUrl))
+            {
+                <img class="w-full h-full object-cover" src="@Model.ProfileImageUrl" alt="Profil" />
+            }
+            else
+            {
+                <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(Model.FirstName)+@(Model.LastName)&background=fff&color=001f48&size=128" />
+            }
+        </div>
+        
+        <div class="z-10">
+            <h1 class="text-3xl font-extrabold tracking-tight">@Model.FirstName @Model.LastName</h1>
+            <p class="text-blue-200 font-medium mt-1">@Model.Email</p>
+            <span class="mt-3 inline-block px-3 py-1 bg-white/20 rounded-lg text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
+                @(Model.RoleId == 1 ? "Sistem Yöneticisi" : "Personel")
+            </span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+        <div class="mb-6 flex items-center gap-2 text-[#001f48] border-b border-slate-100 pb-4">
+            <span class="material-symbols-outlined">manage_accounts</span>
+            <h2 class="text-lg font-bold">Kişisel Bilgileri Düzenle</h2>
+        </div>
+
+        <form action="/User/UpdateUser" method="post" enctype="multipart/form-data" class="space-y-6">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RoleId" />
+            <input type="hidden" asp-for="IsActive" />
+
+            <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <label class="block text-sm font-bold text-slate-700 mb-2">Profil Fotoğrafı Seç (Opsiyonel)</label>
+                <input type="file" name="profileImage" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#00346f] file:text-white hover:file:bg-[#001f48] transition-all cursor-pointer" />
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Ad</label>
+                    <input type="text" asp-for="FirstName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" required />
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Soyad</label>
+                    <input type="text" asp-for="LastName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" required />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">E-Posta Adresi</label>
+                <input type="email" asp-for="Email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" required />
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Yeni Şifre (Sadece değiştirmek istiyorsanız doldurun)</label>
+                <input type="password" asp-for="PasswordHash" value="" placeholder="Yeni şifre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3" />
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex justify-end gap-3">
+                <button type="submit" class="px-8 py-3 bg-[#00346f] text-white font-bold rounded-xl shadow-md">
+                    Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

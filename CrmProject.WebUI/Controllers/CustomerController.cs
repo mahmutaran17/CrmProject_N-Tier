@@ -32,6 +32,9 @@ namespace CrmProject.WebUI.Controllers
 
             await _customerService.AddAsync(customer);
             await _customerService.SaveAsync();
+
+            TempData["Success"] = $"{customer.CustomerName} isimli müşteri başarıyla portföye eklendi. ";
+
             return RedirectToAction("Index");
         }
 
@@ -39,12 +42,13 @@ namespace CrmProject.WebUI.Controllers
         public async Task<IActionResult> UpdateCustomer(int id)
         {
             var value = await _customerService.GetByIdAsync(id);
-            return View(value);
+            return View(value); // İşte bu satır az önce hata verdiğin UpdateCustomer.cshtml'i arıyor
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateCustomer(Customer customer)
         {
+            customer.Status = true;
             _customerService.Update(customer);
             await _customerService.SaveAsync();
             return RedirectToAction("Index");
@@ -53,10 +57,12 @@ namespace CrmProject.WebUI.Controllers
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             var value = await _customerService.GetByIdAsync(id);
-            // Soft delete: Durumunu değiştiriyoruz
-            // value.IsDeleted = true; 
-            _customerService.Update(value);
-            await _customerService.SaveAsync();
+            if (value != null)
+            {
+                value.Status = false; // Soft delete
+                _customerService.Update(value);
+                await _customerService.SaveAsync(); // KAYDETMEYİ UNUTMA
+            }
             return RedirectToAction("Index");
         }
     }

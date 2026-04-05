@@ -5,36 +5,41 @@
 }
 
 <div class="flex justify-between items-center mb-8">
-    <h1 class="text-2xl font-manrope font-extrabold text-blue-900 tracking-tight">Müşteri (Cari) Listesi</h1>
-    <a href="/Customer/AddCustomer" class="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm">
-        <span class="material-symbols-outlined text-[20px]">add_business</span>
-        Yeni Müşteri Ekle
+    <div>
+        <h1 class="text-2xl font-extrabold text-[#001f48] tracking-tight">Müşteri (Cari) Portföyü</h1>
+        <p class="text-sm text-slate-500 mt-1">Sistemdeki tüm kurumsal ve bireysel müşteriler.</p>
+    </div>
+    <a href="/Customer/AddCustomer" class="bg-[#00346f] hover:bg-[#001f48] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg">
+        <span class="material-symbols-outlined text-[20px]">person_add</span> Yeni Müşteri
     </a>
 </div>
 
 <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
     <table class="w-full text-left">
-        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-inter text-xs uppercase tracking-wider">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
             <tr>
-                <th class="p-4 font-semibold">Firma / Şahıs Adı</th>
-                <th class="p-4 font-semibold">Yetkili</th>
-                <th class="p-4 font-semibold">Telefon / E-Posta</th>
-                <th class="p-4 font-semibold text-right">İşlemler</th>
+                <th class="p-5 font-bold">Müşteri Adı / Ünvan</th>
+                <th class="p-5 font-bold">Yetkili</th>
+                <th class="p-5 font-bold">E-Posta</th>
+                <th class="p-5 font-bold">Telefon</th>
+                <th class="p-5 font-bold text-right">İşlemler</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 font-inter text-sm text-slate-700">
+        <tbody class="divide-y divide-slate-100 text-slate-700">
             @foreach (var item in Model)
             {
                 <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-4 font-bold text-blue-900">@item.CustomerName</td>
-                    <td class="p-4">@item.ContactPerson</td>
-                    <td class="p-4">
-                        <div class="text-xs">@item.Phone</div>
-                        <div class="text-[11px] text-slate-400">@item.Email</div>
-                    </td>
-                    <td class="p-4 flex justify-end gap-2">
-                        <a href="/Customer/UpdateCustomer/@item.Id" class="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"><span class="material-symbols-outlined">edit</span></a>
-                        <a href="/Customer/DeleteCustomer/@item.Id" class="text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors"><span class="material-symbols-outlined">delete</span></a>
+                    <td class="p-5 font-bold text-[#001f48]">@item.CustomerName</td>
+                    <td class="p-5 text-sm font-medium">@item.ContactPerson</td>
+                    <td class="p-5 text-sm">@item.Email</td>
+                    <td class="p-5 text-sm">@item.Phone</td>
+                    <td class="p-5 text-right flex justify-end gap-3">
+                        <a href="/Customer/UpdateCustomer/@item.Id" class="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">edit</span> Düzenle
+                        </a>
+                        <a href="/Customer/DeleteCustomer/@item.Id" class="text-red-500 hover:text-red-700 font-bold text-xs flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">delete</span> Sil
+                        </a>
                     </td>
                 </tr>
             }

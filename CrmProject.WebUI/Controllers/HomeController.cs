@@ -1,10 +1,12 @@
+using System.Diagnostics;
 using CrmProject.Business.Abstract;
 using CrmProject.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace CrmProject.WebUI.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IProjectService _projectService;

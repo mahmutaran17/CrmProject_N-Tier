@@ -1,10 +1,12 @@
 ﻿using CrmProject.Business.Abstract;
 using CrmProject.Entity.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CrmProject.WebUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ExpenseController : Controller
     {
         private readonly IExpenseService _expenseService;

@@ -16,6 +16,8 @@ namespace CrmProject.Entity.Entities
         public string PasswordHash { get; set; } = null!;
         public int RoleId { get; set; }
         public bool IsActive { get; set; }
+        public string? ProfileImageUrl { get; set; }
+
         public DateTime RegistrationDate { get; set; }
 
 

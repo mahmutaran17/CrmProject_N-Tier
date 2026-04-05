@@ -5,7 +5,7 @@
 }
 
 <div class="mb-8">
-    <h1 class="text-2xl font-manrope font-extrabold text-blue-900 tracking-tight">Yeni Müşteri Ekle</h1>
+    <h1 class="text-2xl font-manrope font-extrabold text-[#001f48] tracking-tight">Yeni Müşteri Ekle</h1>
     <p class="text-slate-500 font-inter text-sm mt-1">Sisteme yeni bir firma veya şahıs carisi tanımlayın.</p>
 </div>
 
@@ -16,41 +16,41 @@
             
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Firma / Şahıs Adı <span class="text-red-500">*</span></label>
-                <input type="text" asp-for="CustomerName" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="Örn: ABC Teknoloji A.Ş." required />
+                <input type="text" asp-for="CustomerName" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="Örn: ABC Teknoloji A.Ş." required />
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Yetkili Kişi <span class="text-red-500">*</span></label>
-                <input type="text" asp-for="ContactPerson" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="Örn: Ahmet Yılmaz" required />
+                <input type="text" asp-for="ContactPerson" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="Örn: Ahmet Yılmaz" required />
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">E-Posta Adresi <span class="text-red-500">*</span></label>
-                <input type="email" asp-for="Email" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="info@abcteknoloji.com" required />
+                <input type="email" asp-for="Email" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="info@abcteknoloji.com" required />
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Telefon Numarası <span class="text-red-500">*</span></label>
-                <input type="tel" asp-for="Phone" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="+90 (555) 000 00 00" required />
+                <input type="tel" asp-for="Phone" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all" placeholder="+90 (555) 000 00 00" required />
             </div>
 
             <div class="flex items-center mt-8">
                 <label class="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" asp-for="Status" checked value="true" class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 transition-all" />
+                    <input type="checkbox" name="Status" value="true" checked class="w-5 h-5 rounded border-slate-300 text-[#0058be] focus:ring-[#0058be] transition-all" />
                     <span class="text-sm font-semibold text-slate-700">Müşteri Aktif (Sistemde İşlem Görebilir)</span>
                 </label>
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Açık Adres <span class="text-red-500">*</span></label>
-                <textarea asp-for="Address" rows="3" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all resize-none" placeholder="Fatura veya teslimat adresi..." required></textarea>
+                <textarea asp-for="Address" rows="3" class="w-full rounded-xl border-slate-300 focus:border-[#0058be] focus:ring focus:ring-blue-200 text-sm py-2.5 transition-all resize-none" placeholder="Fatura veya teslimat adresi..." required></textarea>
             </div>
 
         </div>
 
         <div class="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-6">
             <a href="/Customer/Index" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Vazgeç</a>
-            <button type="submit" class="px-5 py-2.5 text-sm font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+            <button type="submit" class="px-5 py-2.5 text-sm font-semibold text-white bg-[#00346f] hover:bg-[#001f48] rounded-xl transition-colors flex items-center gap-2 shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">save</span>
                 Müşteriyi Kaydet
             </button>
