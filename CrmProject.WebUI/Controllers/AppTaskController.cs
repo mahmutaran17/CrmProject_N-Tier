@@ -1,8 +1,7 @@
-﻿using CrmProject.Business.Abstract;
+using CrmProject.Business.Abstract;
 using CrmProject.Entity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CrmProject.WebUI.Controllers
 {
@@ -10,74 +9,35 @@ namespace CrmProject.WebUI.Controllers
     public class AppTaskController : Controller
     {
         private readonly IAppTaskService _appTaskService;
-        private readonly IProjectService _projectService;
-        private readonly IUserService _userService;
-        private readonly INotificationService _notificationService; // EKLENDİ
 
-        public AppTaskController(IAppTaskService appTaskService, IProjectService projectService, IUserService userService, INotificationService notificationService)
+        public AppTaskController(IAppTaskService appTaskService)
         {
             _appTaskService = appTaskService;
-            _projectService = projectService;
-            _userService = userService;
-            _notificationService = notificationService;
         }
 
-        // --- GÜNCELLENMİŞ INDEX METODU ---
         public async Task<IActionResult> Index()
         {
             var userIdStr = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
             int currentUserId = string.IsNullOrEmpty(userIdStr) ? 0 : int.Parse(userIdStr);
             bool isAdmin = User.IsInRole("Admin");
 
-            IEnumerable<AppTask> tasks;
-
-            if (isAdmin)
-            {
-                // Admin ise tüm görevleri getir. Atayan kişiyi (AssignedByUser) de Include et!
-                tasks = await _appTaskService.GetListWithIncludesAsync(null, x => x.Project, x => x.AssignedByUser);
-            }
-            else
-            {
-                // Personel ise sadece AssignedUsers listesinde kendisi olanları getir
-                tasks = await _appTaskService.GetListWithIncludesAsync(
-                    x => x.AssignedUsers.Any(u => u.Id == currentUserId),
-                    x => x.Project,
-                    x => x.AssignedByUser
-                );
-            }
-
+            var tasks = await _appTaskService.GetTasksByUserRoleAsync(currentUserId, isAdmin);
             return View(tasks);
         }
 
-        // --- YENİ EKLENEN DETAY METODU ---
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            // Görevi tüm ilişkileriyle (Projesi, Ekibi, Logları, Atayan Kişisi) çekiyoruz
-            var taskList = await _appTaskService.GetListWithIncludesAsync(
-                x => x.Id == id,
-                y => y.Project,
-                y => y.AssignedByUser,
-                y => y.AssignedUsers,
-                y => y.TaskLogs
-            );
-
-            var task = taskList.FirstOrDefault();
+            var task = await _appTaskService.GetTaskDetailsByIdAsync(id);
             if (task == null) return NotFound();
-
             return View(task);
         }
 
-        // --- GÖREV EKLEME (CREATE) ---
         [HttpGet]
         public async Task<IActionResult> Create(int? projectId)
         {
-            var projects = await _projectService.GetWhereAsync(x => x.Status == ProjectStatus.Aktif);
-            ViewBag.Projects = new SelectList(projects, "Id", "ProjectName", projectId);
-
-            var users = await _userService.GetWhereAsync(x => x.IsActive);
-            ViewBag.Users = new SelectList(users, "Id", "FirstName");
-
+            ViewBag.Projects = await _appTaskService.GetActiveProjectsForDropdownAsync(projectId);
+            ViewBag.Users = await _appTaskService.GetActiveUsersForDropdownAsync();
             return View();
         }
 
@@ -85,115 +45,38 @@ namespace CrmProject.WebUI.Controllers
         public async Task<IActionResult> Create(AppTask task, List<int> SelectedUserIds)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-            if (userIdClaim != null)
-            {
-                task.AssignedByUserId = int.Parse(userIdClaim);
-            }
+            int assignedByUserId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
 
-            if (SelectedUserIds != null)
-            {
-                foreach (var userId in SelectedUserIds)
-                {
-                    var user = await _userService.GetByIdAsync(userId);
-                    if (user != null) task.AssignedUsers.Add(user);
-                }
-            }
-
-            // 1. Senin mevcut kodun: Görevi veritabanına kaydediyoruz
-            await _appTaskService.AddAsync(task);
-            await _appTaskService.SaveAsync();
-
-            // 2. YENİ EKLENEN KISIM: Atanan personellere bildirim gönderiyoruz
-            if (SelectedUserIds != null)
-            {
-                foreach (var userId in SelectedUserIds)
-                {
-                    var notification = new Notification
-                    {
-                        UserId = userId,
-                        Message = $"'{task.Title}' başlıklı yeni bir görev size atandı.",
-                        IsRead = false,
-                        CreatedAt = DateTime.Now
-                    };
-                    // Controller'ın üst kısmında _notificationService'i DI ile projeye dahil ettiğini varsayıyorum
-                    await _notificationService.AddAsync(notification);
-                }
-                await _notificationService.SaveAsync();
-            }
-            TempData["Success"] = $"'{task.Title}' başlıklı görev başarıyla oluşturuldu ve bildirimler gönderildi.";
+            var result = await _appTaskService.CreateTaskWithRelationsAsync(task, SelectedUserIds, assignedByUserId);
+            TempData[result.Success ? "Success" : "Error"] = result.Message;
             return RedirectToAction("Index");
         }
 
-        // --- GÖREV GÜNCELLEME (UPDATE) ---
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var task = await _appTaskService.GetByIdAsync(id);
+            var task = await _appTaskService.GetTaskDetailsByIdAsync(id);
+            if (task == null) return NotFound();
 
-            var projects = await _projectService.GetWhereAsync(x => x.Status == ProjectStatus.Aktif);
-            ViewBag.Projects = new SelectList(projects, "Id", "ProjectName");
-
-            var users = await _userService.GetWhereAsync(x => x.IsActive);
-            ViewBag.Users = new SelectList(users, "Id", "FirstName");
-
+            ViewBag.Projects = await _appTaskService.GetActiveProjectsForDropdownAsync(task.ProjectId);
+            ViewBag.Users = await _appTaskService.GetActiveUsersForDropdownAsync();
             return View(task);
         }
 
         [HttpPost]
         public async Task<IActionResult> Update(AppTask task, List<int> SelectedUserIds)
         {
-            // 1. Veritabanındaki MEVCUT görevi (atanan personelleriyle birlikte) buluyoruz
-            var existingTasks = await _appTaskService.GetListWithIncludesAsync(x => x.Id == task.Id, y => y.AssignedUsers);
-            var existingTask = existingTasks.FirstOrDefault();
-
-            if (existingTask != null)
-            {
-                // 2. Temel bilgileri güncelliyoruz (Title, Description vs. senin modelinde hangileri varsa)
-                existingTask.Title = task.Title;
-                existingTask.Description = task.Description;
-                existingTask.DueDate = task.DueDate;
-                existingTask.ProjectId = task.ProjectId;
-                existingTask.Status = task.Status;
-
-                // 3. Atanan Personelleri Güncelle (Önce eskileri temizle, sonra yenileri ekle)
-                existingTask.AssignedUsers.Clear();
-
-                if (SelectedUserIds != null)
-                {
-                    foreach (var userId in SelectedUserIds)
-                    {
-                        var user = await _userService.GetByIdAsync(userId);
-                        if (user != null) existingTask.AssignedUsers.Add(user);
-                    }
-                }
-
-                // 4. Veritabanına kaydet
-                _appTaskService.Update(existingTask);
-                await _appTaskService.SaveAsync();
-
-                TempData["Success"] = $"'{task.Title}' başlıklı görev ve atanan personeller başarıyla güncellendi.";
-            }
-            else
-            {
-                TempData["Error"] = "Güncellenmek istenen görev sistemde bulunamadı.";
-            }
-
+            var result = await _appTaskService.UpdateTaskWithRelationsAsync(task, SelectedUserIds);
+            TempData[result.Success ? "Success" : "Error"] = result.Message;
             return RedirectToAction("Index");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(int id, AppTaskStatus status)
         {
-            var task = await _appTaskService.GetByIdAsync(id);
-            if (task != null)
-            {
-                task.Status = status;
-                _appTaskService.Update(task);
-                await _appTaskService.SaveAsync();
-                TempData["Success"] = $"'{task.Title}' başlıklı görev başarıyla Güncellendi.";
-            }
-            return RedirectToAction("Details", new { id = id });
+            var result = await _appTaskService.UpdateTaskStatusAsync(id, status);
+            TempData[result.Success ? "Success" : "Error"] = result.Message;
+            return RedirectToAction("Details", new { id });
         }
     }
 }

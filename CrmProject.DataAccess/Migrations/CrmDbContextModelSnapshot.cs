@@ -254,6 +254,18 @@ namespace CrmProject.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            RoleName = "Personel"
+                        });
                 });
 
             modelBuilder.Entity("CrmProject.Entity.Entities.TaskLog", b =>
@@ -325,6 +337,19 @@ namespace CrmProject.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@crm.com",
+                            FirstName = "Admin",
+                            IsActive = true,
+                            LastName = "User",
+                            PasswordHash = "$2a$11$9TdjMGviuzAhCZ0xgyd4peEGIAN3tlgCJl8/5Qe7Xt77pu6sS1b.S",
+                            RegistrationDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("AppTaskUser", b =>

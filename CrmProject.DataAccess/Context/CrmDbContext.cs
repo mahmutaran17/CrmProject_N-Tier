@@ -1,4 +1,4 @@
-﻿using CrmProject.Entity.Entities;
+using CrmProject.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -100,9 +100,27 @@ namespace CrmProject.DataAccess.Context
                 .HasForeignKey(p => p.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // --- DATA SEED ---
+            // GAP-B4: Admin seeded with BCrypt hash of "password"
+            // Generated via: BCrypt.Net.BCrypt.HashPassword("password")
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, RoleName = "Admin" },
+                new Role { Id = 2, RoleName = "Personel" }
+            );
 
-
-
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    FirstName = "Admin",
+                    LastName = "User",
+                    Email = "admin@crm.com",
+                    PasswordHash = "$2a$11$9TdjMGviuzAhCZ0xgyd4peEGIAN3tlgCJl8/5Qe7Xt77pu6sS1b.S",
+                    RoleId = 1,
+                    IsActive = true,
+                    RegistrationDate = new DateTime(2026, 1, 1)
+                }
+            );
 
 
 

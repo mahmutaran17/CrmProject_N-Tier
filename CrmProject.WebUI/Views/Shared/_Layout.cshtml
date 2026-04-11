@@ -43,6 +43,7 @@
                 <a class="text-slate-600 hover:text-secondary font-semibold text-sm transition-colors" href="/Customer/Index">Müşteriler</a>
                 <a class="text-slate-600 hover:text-secondary font-semibold text-sm transition-colors" href="/Project/Index">Projeler</a>
                 <a class="text-slate-600 hover:text-secondary font-semibold text-sm transition-colors" href="/AppTask/Index">Görevler</a>
+                <a class="text-slate-600 hover:text-secondary font-semibold text-sm transition-colors" asp-controller="TaskLog" asp-action="Index">Görev Günlükleri</a>
     
                 @if (User.IsInRole("Admin"))
                 {
@@ -170,6 +171,10 @@
         <a class="flex flex-col items-center text-slate-400 hover:text-secondary p-2" href="/AppTask/Index">
             <span class="material-symbols-outlined mb-1">task</span>
             <span class="text-[9px] font-bold uppercase">Görev</span>
+        </a>
+        <a class="flex flex-col items-center text-slate-400 hover:text-secondary p-2" asp-controller="TaskLog" asp-action="Index">
+                <span class="material-symbols-outlined mb-1">list_alt</span>
+                <span class="text-[9px] font-bold uppercase">Günlükler</span>
         </a>
 
         @if (User.IsInRole("Admin"))

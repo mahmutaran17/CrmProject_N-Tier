@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using CrmProject.Business.Abstract;
-using CrmProject.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,40 +7,25 @@ namespace CrmProject.WebUI.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly IProjectService _projectService;
-        private readonly IAppTaskService _appTaskService;
-        private readonly IUserService _userService;
-        private readonly IIncomeService _incomeService;
-        private readonly IExpenseService _expenseService;
-        public HomeController(IProjectService projectService, IAppTaskService appTaskService, IUserService userService, IIncomeService incomeService, IExpenseService expensenseService)
+        private readonly IDashboardService _dashboardService;
+
+        public HomeController(IDashboardService dashboardService)
         {
-            _projectService = projectService;
-            _appTaskService = appTaskService;
-            _userService = userService;
-            _expenseService = expensenseService;
-            _incomeService = incomeService;
+            _dashboardService = dashboardService;
         }
 
         public async Task<IActionResult> Index()
         {
-            // İstatistikleri çekelim
-            var projects = await _projectService.GetAllAsync();
-            var tasks = await _appTaskService.GetAllAsync();
-            var users = await _userService.GetWhereAsync(x => x.IsActive);
-            var incomes = await _incomeService.GetAllAsync();
-            var expenses = await _expenseService.GetAllAsync();
+            var data = await _dashboardService.GetDashboardDataAsync();
 
-            ViewBag.TotalProjects = projects.Count;
-            ViewBag.TotalTasks = tasks.Count;
-            ViewBag.ActiveUsers = users.Count;
-            ViewBag.PendingTasks = tasks.Count(x => x.Status != Entity.Entities.AppTaskStatus.Tamamlandi);
-            ViewBag.TotalIncome = incomes.Sum(x => x.Amount);
-            ViewBag.TotalExpense = expenses.Sum(x => x.Amount);
+            ViewBag.TotalProjects = data.TotalProjects;
+            ViewBag.TotalTasks = data.TotalTasks;
+            ViewBag.ActiveUsers = data.ActiveUsers;
+            ViewBag.PendingTasks = data.PendingTasks;
+            ViewBag.TotalIncome = data.TotalIncome;
+            ViewBag.TotalExpense = data.TotalExpense;
 
-            // Son eklenen 5 görevi listeye gönderelim
-            var lastTasks = tasks.OrderByDescending(x => x.Id).Take(5).ToList();
-
-            return View(lastTasks);
+            return View(data.LastTasks);
         }
     }
 }
