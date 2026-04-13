@@ -115,7 +115,7 @@ namespace CrmProject.DataAccess.Context
                     FirstName = "Admin",
                     LastName = "User",
                     Email = "admin@crm.com",
-                    PasswordHash = "$2a$11$9TdjMGviuzAhCZ0xgyd4peEGIAN3tlgCJl8/5Qe7Xt77pu6sS1b.S",
+                    PasswordHash = "$2a$12$3DXZPBQJT35SYomkVoXwZO6u4EdT.dDSHYLdpLFLApTnij55ioHOa",
                     RoleId = 1,
                     IsActive = true,
                     RegistrationDate = new DateTime(2026, 1, 1)
